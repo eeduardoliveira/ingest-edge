@@ -1,0 +1,21 @@
+# docker-compose.yml
+version: "3.9"
+services:
+  redis:
+    image: redis:7
+    container_name: ingest-redis
+    ports: ["6379:6379"]
+    command: ["redis-server","--appendonly","yes"]
+    volumes:
+      - redis_data:/data
+  ingest-edge:
+    image: golang:1.23
+    environment:
+      - GOTOOLCHAIN=auto
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/app
+    command: go run main.go
+volumes:
+  redis_data:
